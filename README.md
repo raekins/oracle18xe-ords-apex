@@ -35,20 +35,21 @@ Please note you will need an Oracle SSO account to download software from OTN.
 1. Clone GitHub
 1. Copy downloaded files into vagrant directory
 1. Edit Vagrantfile variables e.g.
+   ### Host
    * hostonly_network_ip_address = ""
    * vm_hostname
-   *APEX*
+   ### APEX
    * apexVer = "19.1"
    * apexEmail = "john.smith@gmail.com"
    * apexAdmin = "Welcome1"
    * apexPass = "oracle"
-   *ORDS*
+   ###O RDS
    * ordsVer = "18.4.0.354.1002"
-   *Java*
+   ### Java
    * jarVer = "11.0.1"
-   *Tomcat*
+   ### Tomcat
    * tomVer = "9.0.19"
-   tomPass = "manager"
+   * tomPass = "manager"
 1. type vagrant up
 
 Now sit back and watch Vagrant, VirtualBox and Ansible do it's magic.
