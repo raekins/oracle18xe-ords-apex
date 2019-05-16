@@ -43,7 +43,7 @@ Please note you will need an Oracle SSO account to download software from OTN.
    * apexEmail = "john.smith@gmail.com"
    * apexAdmin = "Welcome1"
    * apexPass = "oracle"
-   ###O RDS
+   ### ORDS
    * ordsVer = "18.4.0.354.1002"
    ### Java
    * jarVer = "11.0.1"
