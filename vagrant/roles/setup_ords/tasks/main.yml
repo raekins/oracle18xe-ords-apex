@@ -1,0 +1,46 @@
+---
+# Create ORDS config directory
+- name: Create ORDS config directory
+  file:
+    path: /u01/ords/conf
+    state: directory
+    mode: 0755
+
+# Unzip ORDS media
+- name: Unarchive ORDS media
+  unarchive:
+    src: /vagrant/ords-{{ ordsVer }}.zip
+    dest: /u01/ords
+
+# Copy ords config file
+- name: Copy ORDS config file
+  template: 
+    src=templates/ords_params.properties.j2 
+    dest=/u01/ords/params/ords_params.properties 
+    mode=0755
+    backup=yes
+
+# Configure ORDS
+- name: Configure ORDS
+  shell: /vagrant/scripts/configure_ords.sh > ~/configure_ords.log 2>&1
+  args:
+    executable: /bin/bash
+
+# Copy APEX images to Tomcat
+- name: Copy APEX images
+  shell: cp -R /home/oracle/apex/images/* /u01/tomcat/latest/webapps/i/
+  args:
+    executable: /bin/bash
+
+# Install ORDS WAR file
+- name: Install ORDS WAR file
+  copy:
+    src: /u01/ords/ords.war
+    dest: /u01/tomcat/latest/webapps/
+    remote_src: yes 
+
+# Start Tomcat
+- name: Start Tomcat
+  shell: ". ~/.bash_profile;/u01/tomcat/latest/bin/startup.sh"
+  args:
+    executable: /bin/bash

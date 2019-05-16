@@ -1,0 +1,6 @@
+---
+# Configure REST
+- name: Configure REST
+  shell: /vagrant/scripts/configure_rest.sh > ~/configure_rest.log 2>&1
+  args:
+    executable: /bin/bash

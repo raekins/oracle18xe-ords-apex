@@ -1,0 +1,63 @@
+---
+
+# Install Linux packages
+- name: install Linux packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-pip
+    - expect
+    - libaio
+
+# Upgrade packages
+- name: upgrade all packages
+  yum:
+    name: "*"
+    state: latest
+
+ 
+#pip install --upgrade pip
+- name: upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade pip
+
+# Update /etc/hosts
+- name: set /etc/hosts remove 127.0.0.1 for hostname
+  lineinfile: 
+    path: /etc/hosts 
+    regexp: '^127\.0\.0\.1.*{{ ansible_hostname }}'
+    state: absent
+
+- name: Update hostfile
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - '{{ ansible_eth1.ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}'
+
+# Disable Firewalld
+- name: Disable firewalld
+  shell: systemctl disable firewalld
+
+# Disable SELinux
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
+# Create Tomcat user
+- name: Add Tomcat user
+  user:
+    name: tomcat
+    comment: tomcat webserver user
+
+# Create Tomcat Directories
+- name: Create /u01 directory
+  file:
+    path: /u01
+    state: directory
+    owner: tomcat
+    group: tomcat
+    mode: 0777

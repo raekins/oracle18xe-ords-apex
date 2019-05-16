@@ -1,0 +1,69 @@
+---
+
+# Install Oracle 18c preinstall package
+- name: install 18c preinstall package
+  yum:
+    name: "oracle-database-preinstall-18c"
+
+# Install Oracle 18 XE package
+- name: install Oracle 18xe package
+  yum:
+    name: "oracle-database-xe-18c-1.0-1.x86_64.rpm"
+
+# Install cx_Oracle python package.
+- name: install cx_Oracle python package
+  pip:
+    name: cx_Oracle
+
+# Install the pexpect python package.
+- name: install pexpect python packge
+  pip:
+    name: pexpect
+# 
+# Setup
+- name: Copy Oracle 18c-xe template 
+  template: src=templates/oracle-xe-18c_configure.tcl.j2 dest=/root/oracle-xe-18c_configure.tcl mode=0755
+
+# Configure Oracle 18c-xe
+- name: Configure Oracle 18c-xe
+  shell: /root/oracle-xe-18c_configure.tcl
+  args:
+    creates: /root/oracle-xe-18c_configure.log
+
+# Update /etc/oratab
+- lineinfile:
+    path: /etc/oratab
+    regexp: '^XE:/u01/oracle/product/18c/dbhomeXE:N'
+    line: 'XE:/u01/oracle/product/18c/dbhomeXE:Y'
+
+# Enable service
+- name: oracle-xe-18c enable
+  shell: systemctl enable oracle-xe-18c
+
+# Start service
+- name: oracle-xe-18c start
+  shell: systemctl start oracle-xe-18c
+
+# Update TNSNames.ora
+- name: Update tnsnames.ora
+  lineinfile: 
+    path: /opt/oracle/product/18c/dbhomeXE/network/admin/tnsnames.ora
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - 'XEPDB1 ='
+    - ' (DESCRIPTION ='
+    - '   (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_fqdn }} )(PORT = 1521))'
+    - '   (CONNECT_DATA ='
+    - '     (SERVER = DEDICATED)'
+    - '     (SERVICE_NAME = XEPDB1)'
+    - '   )'
+    - ' )'
+
+
+# Add Tomcat to oinstall group
+- name: Add Tomcat to oinstall group
+  user:
+    name: tomcat
+    groups: oinstall
+    append: yes

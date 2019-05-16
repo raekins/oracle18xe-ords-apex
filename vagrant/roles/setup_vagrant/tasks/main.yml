@@ -1,0 +1,10 @@
+# Update bash_profile
+- name: Update bash_profile
+  lineinfile:
+    path: /home/vagrant/.bash_profile
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - '#export ANSIBLE_KEEP_REMOTE_FILES=1'
+    - 'export PATH=$PATH:/vagrant/python'
+

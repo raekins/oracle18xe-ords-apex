@@ -1,0 +1,17 @@
+#!/usr/bin/expect -f
+set env(ORAPASS) {{ oraPass }}
+
+set timeout 3600
+log_file ~/oracle-xe-18c_configure.log
+log_user 1
+
+spawn /etc/init.d/oracle-xe-18c configure
+
+expect "Specify a password*"
+send "$env(ORAPASS)\r";
+
+expect "Confirm the password:"
+send "$env(ORAPASS)\r";
+
+
+expect eof

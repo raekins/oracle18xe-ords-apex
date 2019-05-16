@@ -1,0 +1,20 @@
+---
+
+# Update /etc/ansible/ansible.cfg
+- name: update ansible.cfg
+  lineinfile:
+    path: /etc/ansible/ansible.cfg
+    line: "{{ item }}"
+  with_items:
+    - 'callback_whitelist = profile_tasks'
+    - 'deprecation_warnings=False'
+    - 'command_warnings=False'
+
+# Update /etc/ansible/hosts
+- name: update ansible hosts
+  lineinfile:
+    path: /etc/ansible/hosts
+    line: "{{ item }}"
+  with_items:
+    - '[local]'
+    - 'localhost ansible_connection=local'

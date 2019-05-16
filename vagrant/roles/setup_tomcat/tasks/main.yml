@@ -1,0 +1,108 @@
+---
+# Create Java Directories
+- name: Create /u01/java directory
+  file:
+    path: /u01/java
+    state: directory
+    mode: 0777
+
+# Unzip Java media
+- name: Unarchive Java media
+  unarchive:
+    src: /vagrant/openjdk-{{ jarVer }}_linux-x64_bin.tar.gz
+    dest: /u01/java
+    creates: /u01/java/jdk-{{ jarVer }}
+
+# Create symoblic link for Java 
+- name: Create symbolic link for Java
+  file:
+    src: /u01/java/jdk-{{ jarVer }}
+    dest: /u01/java/latest
+    state: link
+
+# Create Tomcat Directories
+- name: Create /u01/tomcat directory
+  file:
+    path: /u01/tomcat
+    state: directory
+    mode: 0777
+
+# Unzip Tomcat media
+- name: Unarchive Tomcat media
+  unarchive:
+    src: /vagrant/apache-tomcat-{{ tomVer }}.tar.gz
+    dest: /u01/tomcat
+    creates: /u01/tomcat/apache-tomcat-{{ tomVer }}
+
+# Create symoblic link for Tomcat
+- name: Create symbolic link for Tomcat
+  file:
+    src: /u01/tomcat/apache-tomcat-{{ tomVer }}
+    dest: /u01/tomcat/latest
+    state: link
+
+# Open up Webapps for RW
+- name: Open up Webapps for read-write
+  file:
+    path: /u01/tomcat/latest/webapps
+    mode: 0777
+
+# Create Webapps Image direcory
+- name: Create webapps image directory
+  file:
+    path: /u01/tomcat/latest/webapps/i
+    state: directory
+    mode: 0777
+
+# Update bash_profile for tomcat
+- name: Update bash_profile for tomcat
+  lineinfile:
+    path: /home/tomcat/.bash_profile
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - 'export JAVA_HOME=/u01/java/latest'
+    - 'export CATALINA_HOME=/u01/tomcat/latest'
+    - 'export CATALINA_BASE=/u01/tomcat/latest'
+    - 'export PATH=$PATH:$JAVA_HOME/bin'
+
+# Update Tomcat Manager UI password
+- name: Update Tomcat Manager UI password
+  lineinfile:
+    path: /u01/tomcat/latest/conf/tomcat-users.xml
+    state: present
+    line: "{{ item }}"
+    insertbefore: '</tomcat-users>'
+  with_items:
+    - '  <role rolename="manager-gui"/>'
+    - '  <role rolename="manager-status"/>'
+    - '  <role rolename="admin-gui"/>'
+    - '  <user username="tomcat" password="{{ tomPass }}" roles="manager-gui,manager-status,admin-gui"/>'
+
+# Enable Remote Tomcat Access
+- name: Enable manager remote Tomcat access1
+  lineinfile:
+    path: /u01/tomcat/latest/webapps/manager/META-INF/context.xml
+    regex: '<Valve className='
+    line: '<!--<Valve className="org.apache.catalina.valves.RemoteAddrValve"'
+
+- name: Enable manager remote Tomcat access2
+  lineinfile:
+    path: /u01/tomcat/latest/webapps/manager/META-INF/context.xml
+    regex: '.?HashMap.>'
+    insertafter: '<Manager sessionAttributeValueClassNameFilter='
+    line: '-->'
+
+# Enable Remote Tomcat Access
+- name: Enable host-manager remote Tomcat access1
+  lineinfile:
+    path: /u01/tomcat/latest/webapps/host-manager/META-INF/context.xml
+    regex: '<Valve className='
+    line: '<!--<Valve className="org.apache.catalina.valves.RemoteAddrValve"'
+
+- name: Enable host-manager remote Tomcat access2
+  lineinfile:
+    path: /u01/tomcat/latest/webapps/host-manager/META-INF/context.xml
+    regex: '.?HashMap.>'
+    insertafter: '<Manager sessionAttributeValueClassNameFilter='
+    line: '-->'

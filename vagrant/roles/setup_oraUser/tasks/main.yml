@@ -1,0 +1,38 @@
+# Update bash_profile
+- name: Update bash_profile
+  lineinfile:
+    path: /home/oracle/.bash_profile
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - 'export ORACLE_BASE=/opt/oracle'
+    - 'export ORACLE_HOME=$ORACLE_BASE/product/18c/dbhomeXE'
+    - 'export LD_LIBRARY_PATH=$ORACLE_HOME/lib'
+    - 'export ORACLE_SID=XE'
+    - 'export ORACLE_PATH=/home/oracle/sql'
+    - 'export PDB_NAME=XEPDB1'
+    - 'export JAVA_HOME=/u01/java/latest'
+    - 'export CATALINA_HOME=/u01/tomcat/latest'
+    - 'export CATALINA_BASE=/u01/tomcat/latest'
+    - 'export PATH=$PATH:$ORACLE_HOME/bin:$JAVA_HOME/bin'
+    - 'export PATH=$PATH:/vagrant/python'
+
+# Create SQL directory
+- name: Create SQL directory
+  file:
+    path: /home/oracle/sql
+    state: directory
+    mode: 0755
+
+# Copy ORDS HR sql
+- name: Copy ORDS HR sql
+  copy:
+    src: files/ords_hr.sql
+    dest: /home/oracle/sql/ords_hr.sql
+    mode: 0644
+
+# Unlock Oracle HR schema
+- name: Setup Oracle HR demo schema
+  shell: /vagrant/scripts/unlock_hr.sh > ~/unlock_hr.log 2>&1
+  args:
+    executable: /bin/bash

@@ -1,0 +1,37 @@
+---
+
+# Unzip APEX media
+- name: Unarchive APEX media
+  unarchive:
+    src: /vagrant/apex_{{ apexVer }}_en.zip
+    dest: /home/oracle
+    creates: /home/oracle/apex
+
+# Open up image directory
+- name: Open up Apex image dir
+  file: 
+    path: /home/oracle/apex/..
+    recurse: yes
+    mode: 0755
+
+# Copy install apex script
+- name: Copy install apex script
+  template:
+    src=templates/configure_apex.sql.j2 
+    dest=/home/oracle/sql/configure_apex.sql 
+    mode=0766
+
+# Update bash_profile for APEX
+- name: Update bash_profile for APEX
+  lineinfile:
+    path: /home/oracle/.bash_profile
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - 'export APEX_HOME=/home/oracle/apex'
+
+# Install APEX
+- name: Install APEX
+  shell: /vagrant/scripts/configure_apex.sh  > ~/configure_apex.log 2>&1
+  args:
+    executable: /bin/bash

@@ -1,0 +1,48 @@
+---
+
+# Setup Oracle Linux Server
+
+- hosts: localhost
+  gather_facts: true
+  become: true
+  become_method: sudo
+
+  roles:
+  - { role: setup_linux, tags: [ 'setup', 'linux'] }
+  - { role: setup_ansible, tags: [ 'setup', 'ansible'] }
+  - { role: setup_pure, tags: [ 'setup', 'pure'] }
+  - { role: setup_oracle, tags: [ 'setup', 'oracle'] }
+
+- hosts: localhost
+  gather_facts: true
+  become: true
+  become_user: vagrant
+
+  roles:
+  - { role: setup_vagrant, tags: [ 'setup', 'vagrant'] }
+
+- hosts: localhost
+  gather_facts: true
+  become: true
+  become_user: oracle
+
+  roles:
+  - { role: setup_oraUser, tags: [ 'setup', 'oracle'] }
+  - { role: setup_apex, tags: [ 'setup', 'apex'] }
+
+- hosts: localhost
+  gather_facts: true
+  become: true
+  become_user: tomcat
+
+  roles:
+  - { role: setup_tomcat, tags: [ 'setup', 'tomcat'] }
+  - { role: setup_ords, tags: [ 'setup', 'ords'] }
+
+- hosts: localhost
+  gather_facts: true
+  become: true
+  become_user: oracle
+
+  roles:
+  - { role: setup_rest, tags: [ 'setup', 'rest'] }
