@@ -28,7 +28,7 @@ vm_hostname = "oraclexe"
 oraPass = "manager"
 # APEX
 apexVer = "19.1"
-apexEmail = "john.smith@gmail.com"
+apexEmail = "ron.ekins@gmail.com"
 apexAdmin = "Welcome1"
 apexPass = "oracle"
 # ORDS
