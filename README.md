@@ -1,5 +1,5 @@
 # oracle18xe-ords-apex
-Fully automated Vagrant build using VirtualBox and the Ansible provider for Oracle 18xe, Oracle REST Data Services (ORDS), Application Express (APEX) with Apache Tomcat 
+Fully automated Vagrant build using VirtualBox and the Ansible provisioner for Oracle 18xe, Oracle REST Data Services (ORDS), Application Express (APEX) with Apache Tomcat 
 
 # Pre-Requisites
 This Vagrant build requires Vagrant and VirtualBox to be pre-installed, this build was tested with Vagrant 2.2.4 & VirtualBox 6.0.4
