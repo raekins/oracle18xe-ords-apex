@@ -34,10 +34,13 @@ Please note you will need an Oracle SSO account to download software from OTN.
 # Getting Started
 1. Clone GitHub
 1. Copy downloaded files into vagrant directory
-1. Edit Vagrantfile variables as require:
+1. Edit Vagrantfile variables as required:
    ### Host
    * hostonly_network_ip_address = ""
    * vm_hostname = ""
+   ### Oracle
+   * oraPass = "manager"
+   * oraWallet = "WalletPasswd123"
    ### APEX
    * apexVer = "19.1"
    * apexEmail = "john.smith@gmail.com"
