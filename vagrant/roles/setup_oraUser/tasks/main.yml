@@ -17,6 +17,13 @@
     - 'export PATH=$PATH:$ORACLE_HOME/bin:$JAVA_HOME/bin'
     - 'export PATH=$PATH:/vagrant/python'
 
+# Create Oracle Wallet directory
+- name: Create Oracle Wallet directory
+  file:
+    path: /opt/oracle/admin/XE/wallet
+    state: directory
+    mode: 0755
+
 # Create SQL directory
 - name: Create SQL directory
   file:
@@ -24,15 +31,35 @@
     state: directory
     mode: 0755
 
-# Copy ORDS HR sql
-- name: Copy ORDS HR sql
+# Create Scripts directory
+- name: Create Scripts directory
+  file:
+    path: /home/oracle/scripts
+    state: directory
+    mode: 0755
+
+# Copy SQL files
+- name: Copy SQL files 
   copy:
-    src: files/ords_hr.sql
-    dest: /home/oracle/sql/ords_hr.sql
+    src: files/sql/
+    dest: /home/oracle/sql
     mode: 0644
 
 # Unlock Oracle HR schema
 - name: Setup Oracle HR demo schema
   shell: /vagrant/scripts/unlock_hr.sh > ~/unlock_hr.log 2>&1
+  args:
+    executable: /bin/bash
+
+# Copy configure wallet script
+- name: Copy configure wallet script
+  template:
+    src=templates/configure_wallet.sh.j2
+    dest=/home/oracle/scripts/configure_wallet.sh
+    mode=0755
+
+# Configure Oracle Wallet
+- name: Configure Oracle Wallet
+  shell: /home/oracle/scripts/configure_wallet.sh > ~/configure_wallet.log 2>&1
   args:
     executable: /bin/bash

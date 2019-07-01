@@ -26,6 +26,7 @@ vm_hostname = "oraclexe"
 #
 # Oracle 18c XE 
 oraPass = "manager"
+oraWallet = "WalletPasswd123"
 # APEX
 apexVer = "19.1"
 apexEmail = "john.smith@gmail.com"
@@ -105,6 +106,7 @@ Vagrant.configure("2") do |config|
     ansible.limit          = "all" # or only "nodes" group, etc.
     ansible.extra_vars = {
         oraPass: oraPass,
+        oraWallet: oraWallet,
         apexVer: apexVer,
         apexEmail: apexEmail,
         apexPass: apexPass,

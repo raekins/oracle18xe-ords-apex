@@ -1,0 +1,11 @@
+#!/bin/bash
+source ~/.bash_profile
+echo -e "Create Oracle Wallet -" `date`
+
+$ORACLE_HOME/bin/orapki wallet create -wallet $ORACLE_BASE/admin/XE/wallet -pwd {{ oraWallet }} -auto_login
+
+echo -e "Install Certificate -" `date`
+$ORACLE_HOME/bin/orapki wallet add -wallet $ORACLE_BASE/admin/XE/wallet -cert "/vagrant/DigiCertHighAssuranceEVRootCA.crt" -trusted_cert -pwd {{ oraWallet }} 
+
+
+exit
